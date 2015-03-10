@@ -1,10 +1,6 @@
 import datetime
-import json
 import csv
 from datetime import date
-
-
-goalWeight=160
 
 
 commandLineArt="-"*50
@@ -29,11 +25,9 @@ def weight_lost(data):
 def weight_days_ratio(weight,days):
     return weight/days
 
-def calculate_goal_date(ratio,weight,today):
-    daysNeed=0
-    while (weight > goalWeight):
-        weight-=ratio
-        daysNeed+=1
+def calculate_goal_date(ratio,weight,goalWeight):
+    daysNeed=(weight-goalWeight)/ratio
+
     return daysNeed
 
 def SaveData(data):
@@ -75,14 +69,24 @@ def GetWeight():
             print("That's not a valid number!")
     return weight
 
+def GetGoal():
+    goal=None
+    while (goal==None):
+        userInput=input("Whats your goal weight? :")
+        try:
+            goal=float(userInput)
+            break
 
+        except ValueError:
+            print("That's not a valid number!")
+    return goal
 
 
 
 def main():
     recordData=LoadData()
-
     currentWeight=GetWeight()
+    goalWeight=GetGoal()
 
     NewWeightEntry(currentWeight,recordData)
     print("Added new weight...")
@@ -95,7 +99,7 @@ def main():
     ratio=weight_days_ratio(weightLost,daysTotal)
     print("Calcuated ratio...")
 
-    daysUntillGoal=calculate_goal_date(ratio,currentWeight,today)
+    daysUntillGoal=calculate_goal_date(ratio,currentWeight,goalWeight)
     dateOfGoal=today+datetime.timedelta(days=daysUntillGoal)
 
     print("\n"
