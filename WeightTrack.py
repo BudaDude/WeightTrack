@@ -85,15 +85,15 @@ def main():
     currentWeight=GetWeight()
 
     NewWeightEntry(currentWeight,recordData)
-    print("Added new weight")
+    print("Added new weight...")
 
     daysTotal=days_between_dates(recordData)
-    print("Retrieved days")
+    print("Retrieved days...")
 
     weightLost=weight_lost(recordData)
-    print("Retrieved weight lost")
+    print("Retrieved weight lost...")
     ratio=weight_days_ratio(weightLost,daysTotal)
-    print("Calcuated ratio")
+    print("Calcuated ratio...")
 
     daysUntillGoal=calculate_goal_date(ratio,currentWeight,today)
     dateOfGoal=today+datetime.timedelta(days=daysUntillGoal)
