@@ -23,7 +23,8 @@ def weight_lost(data):
     return startWeight-currentWeight
 
 def weight_days_ratio(weight,days):
-    return weight/days
+        return weight/days
+
 
 def calculate_goal_date(ratio,weight,goalWeight):
     daysNeed=(weight-goalWeight)/ratio
@@ -45,13 +46,14 @@ def NewWeightEntry(weight,records):
 def LoadData():
     data=[]
     with open("data.csv") as f:
-        csv_f=csv.reader(f)
-        for row in csv_f:
-            row_data=[datetime.datetime.strptime(row[0],"%Y-%m-%d").date(),
-                     row[1]]
-
-
-            data.append(row_data)
+        try:
+            csv_f=csv.reader(f)
+            for row in csv_f:
+                row_data=[datetime.datetime.strptime(row[0],"%Y-%m-%d").date(),
+                         row[1]]
+                data.append(row_data)
+        except IndexError as e:
+            print(e)
         f.close()
     return data
 
@@ -81,38 +83,46 @@ def GetGoal():
             print("That's not a valid number!")
     return goal
 
+def FirstTime():
+    print("It looks like this is your first time.\nIn order for me to work I need at least 2 entries on 2 seperate days.\n"
+              "Come Back tomorrow and I will be able to work for you :)")
 
 
 def main():
     recordData=LoadData()
     currentWeight=GetWeight()
     goalWeight=GetGoal()
+    if len(recordData) < 2:
 
-    NewWeightEntry(currentWeight,recordData)
-    print("Added new weight...")
+        NewWeightEntry(currentWeight,recordData)
+        print("Added new weight...")
 
-    daysTotal=days_between_dates(recordData)
-    print("Retrieved days...")
-
-    weightLost=weight_lost(recordData)
-    print("Retrieved weight lost...")
-    ratio=weight_days_ratio(weightLost,daysTotal)
-    print("Calcuated ratio...")
-
-    daysUntillGoal=calculate_goal_date(ratio,currentWeight,goalWeight)
-    dateOfGoal=today+datetime.timedelta(days=daysUntillGoal)
-
-    print("\n"
-          "%s\n"
-          "Start Date: %s\n"
-          "Today is: %s\n"
-          "You have lost: %slbs\n"
-          "That's %slbs a day!\n\n"
-          "To reach your goal weight of %s,\n"
-          "It should take %s days (%s)\n"
-          "%s" %(commandLineArt, recordData[0][0].isoformat(),today,weightLost,ratio,goalWeight,daysUntillGoal,dateOfGoal,commandLineArt))
+        daysTotal=days_between_dates(recordData)
+        print("Retrieved days...")
+        if (daysTotal >0):
 
 
+            weightLost=weight_lost(recordData)
+            print("Retrieved weight lost...")
+            ratio=weight_days_ratio(weightLost,daysTotal)
+            print("Calcuated ratio...")
 
+            daysUntillGoal=calculate_goal_date(ratio,currentWeight,goalWeight)
+            dateOfGoal=today+datetime.timedelta(days=daysUntillGoal)
+
+            print("\n"
+                  "%s\n"
+                  "Start Date: %s\n"
+                  "Today is: %s\n"
+                  "You have lost: %slbs\n"
+                  "That's %slbs a day!\n\n"
+                  "To reach your goal weight of %s,\n"
+                  "It should take %s days (%s)\n"
+                  "%s" %(commandLineArt, recordData[0][0].isoformat(),today,weightLost,ratio,goalWeight,daysUntillGoal,dateOfGoal,commandLineArt))
+
+        else:
+            FirstTime()
+    else:
+        FirstTime()
 
 main()
